@@ -23,39 +23,40 @@ async fn main() {
     for i in 1..nb_client + 1 {
         pool.execute(move || {
             let runtime = Runtime::new().unwrap();
+            let tid = i as i32;
             loop {
-                let type_query: i32 = random_numb(1,5);
+                let type_query: i32 = random_numb(1,6);
                 match type_query {
                     1 => match runtime.block_on(async {
-                        post_item(i as i32).await
+                        post_item(tid).await
                     })
                     {
                         Ok(_) => {}
                         Err(e) => println!("Error : {}", e),
                     }
                     2 => match runtime.block_on(async {
-                        get_item(random_numb(1,50)).await
+                        get_item(tid, random_numb(1,50)).await
                     })
                     {
                         Ok(_) => {}
                         Err(e) => println!("Error : {}", e),
                     }
                     3 => match runtime.block_on(async {
-                        delete_item(random_numb(1,50)).await
+                        delete_item(tid, random_numb(1,50)).await
                     })
                     {
                         Ok(_) => {}
                         Err(e) => println!("Error : {}", e),
                     }
                     4 => match runtime.block_on(async {
-                        update_item(random_numb(1,50)).await
+                        update_item(tid, random_numb(1,50)).await
                     })
                     {
                         Ok(_) => {}
                         Err(e) => println!("Error : {}", e),
                     }
                     5 => match runtime.block_on(async {
-                        get_items_by_table_id(i as i32).await
+                        get_items_by_table_id(tid).await
                     })
                     {
                         Ok(_) => {}
@@ -84,11 +85,11 @@ async fn post_item(tid: i32) -> Result<(), Error> {
         .send()
         .await?;
     let msg = &resp.text().await?;
-    println!("TABLE {} : CREATE ITEM :  {:?}", id, msg);
+    println!("[TABLE {}] CREATE ITEM :  {:?}", id, msg);
     Ok(())
 }
 
-async fn get_item(id: i32) -> Result<(), Error> {
+async fn get_item(tid: i32, id: i32) -> Result<(), Error> {
     let mut url: String = "http://127.0.0.1:8080/items".to_string();
     url.push_str("/");
     url.push_str(&id.to_string());
@@ -99,11 +100,11 @@ async fn get_item(id: i32) -> Result<(), Error> {
         .send()
         .await?;
     let msg = resp.text().await?.to_string();
-    println!("ITEM {} : {:?}", id, msg);
+    println!("[TABLE {}] GET ITEM {} : {:?}", tid, id, msg);
     Ok(())
 }
 
-async fn delete_item(id: i32) -> Result<(), Error> {
+async fn delete_item(tid: i32, id: i32) -> Result<(), Error> {
     let mut url: String = "http://127.0.0.1:8080/items".to_string();
     url.push_str("/");
     url.push_str(&id.to_string());
@@ -113,12 +114,12 @@ async fn delete_item(id: i32) -> Result<(), Error> {
         .delete(url)
         .send()
         .await?;
-    let msg = resp.text().await?;
-    println!("ITEM {} : ITEM DELETED {:?}", id, msg);
+    let msg = resp.text().await?.to_string();
+    println!("[TABLE {}] ITEM {} DELETED : {}", tid, id, msg);
     Ok(())
 }
 
-async fn update_item(id: i32) -> Result<(), Error> {
+async fn update_item(tid: i32, id: i32) -> Result<(), Error> {
     let item: UpdateItem = UpdateItem {
         name: random_string(),
         cook_time: random_numb(5,15),
@@ -130,12 +131,12 @@ async fn update_item(id: i32) -> Result<(), Error> {
 
     let executor = Client::new();
     let resp = executor
-        .patch(url)
+        .put(url)
         .json(&item)
         .send()
         .await?;
     let msg = resp.text().await?.to_string();
-    println!("ITEM {} : ITEM UPDATED : {:?}", id, msg);
+    println!("[TABLE {}] ITEM UPDATED {} : {:?}", tid, id, msg);
     Ok(())
 }
 
@@ -150,6 +151,6 @@ async fn get_items_by_table_id(tid: i32) -> Result<(), Error> {
         .send()
         .await?;
     let msg = resp.text().await?.to_string();
-    println!("TABLE {} : ITEM(S) : {:?}", tid, msg);
+    println!("[TABLE {}] ITEM(S) : {:?}", tid, msg);
     Ok(())
 }
