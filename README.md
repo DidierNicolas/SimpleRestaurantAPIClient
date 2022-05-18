@@ -13,7 +13,7 @@ To build and run this application, apply theses instructions in the project fold
 </p>
 
 <h2>Outputs</h2>
-The application will continusly make http request until you stop it.
+The application will continuously make http request until you stop it.
 It will randomly make an http request between :
 <h4>CREATE ITEM</h4>
 <p>It will output the content of the created item(s) for the table number<br>
