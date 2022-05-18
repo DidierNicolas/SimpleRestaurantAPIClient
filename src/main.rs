@@ -1,7 +1,8 @@
 mod type_request;
 mod utils;
 
-use std::env;
+use std::{env, thread};
+use std::time::Duration;
 use threadpool::ThreadPool;
 use reqwest::Client;
 use reqwest::Error;
@@ -25,6 +26,7 @@ async fn main() {
             let runtime = Runtime::new().unwrap();
             let tid = i as i32;
             loop {
+                let duration: u64 = random_numb(1, 20) as u64;
                 let type_query: i32 = random_numb(1,6);
                 match type_query {
                     1 => match runtime.block_on(async {
@@ -64,6 +66,7 @@ async fn main() {
                     }
                     _ => println!("[ERROR] Number out limit !"),
                 }
+                thread::sleep(Duration::from_millis(duration * 1000));
             }
         });
     }
