@@ -37,21 +37,21 @@ async fn main() {
                         Err(e) => println!("Error : {}", e),
                     }
                     2 => match runtime.block_on(async {
-                        get_item(tid, random_numb(1,50)).await
+                        get_item(tid, random_numb(1,11)).await
                     })
                     {
                         Ok(_) => {}
                         Err(e) => println!("Error : {}", e),
                     }
                     3 => match runtime.block_on(async {
-                        delete_item(tid, random_numb(1,50)).await
+                        delete_item(tid, random_numb(1,11)).await
                     })
                     {
                         Ok(_) => {}
                         Err(e) => println!("Error : {}", e),
                     }
                     4 => match runtime.block_on(async {
-                        update_item(tid, random_numb(1,50)).await
+                        update_item(tid, random_numb(1,11)).await
                     })
                     {
                         Ok(_) => {}
@@ -93,7 +93,9 @@ async fn post_item(tid: i32) -> Result<(), Error> {
 }
 
 async fn get_item(tid: i32, id: i32) -> Result<(), Error> {
-    let mut url: String = "http://127.0.0.1:8080/items".to_string();
+    let mut url: String = "http://127.0.0.1:8080/tables".to_string();
+    url.push_str("/");
+    url.push_str(&tid.to_string());
     url.push_str("/");
     url.push_str(&id.to_string());
 
@@ -108,7 +110,9 @@ async fn get_item(tid: i32, id: i32) -> Result<(), Error> {
 }
 
 async fn delete_item(tid: i32, id: i32) -> Result<(), Error> {
-    let mut url: String = "http://127.0.0.1:8080/items".to_string();
+    let mut url: String = "http://127.0.0.1:8080/tables".to_string();
+    url.push_str("/");
+    url.push_str(&tid.to_string());
     url.push_str("/");
     url.push_str(&id.to_string());
 
@@ -128,7 +132,9 @@ async fn update_item(tid: i32, id: i32) -> Result<(), Error> {
         cook_time: random_numb(5,15),
     };
 
-    let mut url: String = "http://127.0.0.1:8080/items".to_string();
+    let mut url: String = "http://127.0.0.1:8080/tables".to_string();
+    url.push_str("/");
+    url.push_str(&tid.to_string());
     url.push_str("/");
     url.push_str(&id.to_string());
 
