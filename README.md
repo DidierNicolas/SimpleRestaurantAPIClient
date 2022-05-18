@@ -4,7 +4,7 @@
 
 <h2>Build & Launch the Application</h2>
 <p>This application need to be run after the server one. (https://github.com/DidierNicolas/SimpleRestaurantApiServer)<br>
-To build and run this application, apply theses instructions</p>
+To build and run this application, apply theses instructions in the project folder</p>
 <code>cargo build --bin SimpleRestaurantApiClient </code><br>
 <code>cargo run --bin SimpleRestaurantApiClient [num]</code>
 
